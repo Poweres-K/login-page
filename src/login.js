@@ -1,25 +1,22 @@
 import React, { useReducer, useEffect, useRef } from "react";
 import { reducer } from "./reducer";
 import defaultData from "./data";
+import InputField from "./inputField";
 
 const LoginCard = () => {
   const SubmitBtn = useRef(null);
-  const form = useRef(null);
-  const mainLogIn = useRef(null);
   const [state, dispatch] = useReducer(reducer, defaultData);
 
   useEffect(() => {
     for (let key of Object.keys(state)) {
-      if (!state[key]) {
+      if (!state[key].value) {
         SubmitBtn.current.disabled = true;
         return;
       }
     }
     SubmitBtn.current.disabled = false;
   }, [state]);
-  useEffect(() => {
-    console.log(form.current.offsetHeight);
-  }, []);
+
   const handleChange = (e) => {
     dispatch({
       type: "TEXT_CHANGE",
@@ -29,52 +26,26 @@ const LoginCard = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    window.alert(`${state.name} ,You are registered with ${state.email}`);
+    window.alert(
+      `${state.name.value} ,You are registered with ${state.email.value}`
+    );
   };
+
   return (
-    <div className="main-login" useRef={mainLogIn}>
+    <div className="main-login">
       <h3>Register</h3>
-      <form className="form-control" onSubmit={handleSubmit} ref={form}>
-        <div className="input-box">
-          <input
-            autoComplete="off"
-            type="text"
-            name="name"
-            placeholder="name"
-            value={state.name}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="input-box">
-          <input
-            autoComplete="off"
-            type="email"
-            name="email"
-            placeholder="email"
-            value={state.email}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="input-box">
-          <input
-            type="password"
-            name="password"
-            placeholder="password"
-            value={state.password}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="input-box">
-          <input
-            type="password"
-            name="passwordRepeat"
-            placeholder="password repeat"
-            value={state.passwordRepeat}
-            onChange={handleChange}
-          />
-        </div>
+      <form className="form-control" onSubmit={handleSubmit}>
+        {Object.keys(state).map((key) => {
+          if (key !== "termAccepted") {
+            return (
+              <InputField
+                {...state[key]}
+                key={state[key].id}
+                handleChange={handleChange}
+              />
+            );
+          }
+        })}
 
         <div className="check-box">
           <label htmlFor="termAccepted">
@@ -85,7 +56,7 @@ const LoginCard = () => {
               onChange={() =>
                 dispatch({
                   type: "TRIGGER_TERM",
-                  payload: !state.termAccepted,
+                  payload: !state.termAccepted.value,
                 })
               }
             />
