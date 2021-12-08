@@ -4,6 +4,8 @@ import defaultData from "./data";
 
 const LoginCard = () => {
   const SubmitBtn = useRef(null);
+  const form = useRef(null);
+  const mainLogIn = useRef(null);
   const [state, dispatch] = useReducer(reducer, defaultData);
 
   useEffect(() => {
@@ -15,7 +17,9 @@ const LoginCard = () => {
     }
     SubmitBtn.current.disabled = false;
   }, [state]);
-
+  useEffect(() => {
+    console.log(form.current.offsetHeight);
+  }, []);
   const handleChange = (e) => {
     dispatch({
       type: "TEXT_CHANGE",
@@ -28,11 +32,12 @@ const LoginCard = () => {
     window.alert(`${state.name} ,You are registered with ${state.email}`);
   };
   return (
-    <div className="main-login">
+    <div className="main-login" useRef={mainLogIn}>
       <h3>Register</h3>
-      <form className="form-control" onSubmit={handleSubmit}>
+      <form className="form-control" onSubmit={handleSubmit} ref={form}>
         <div className="input-box">
           <input
+            autoComplete="off"
             type="text"
             name="name"
             placeholder="name"
@@ -42,6 +47,7 @@ const LoginCard = () => {
         </div>
         <div className="input-box">
           <input
+            autoComplete="off"
             type="email"
             name="email"
             placeholder="email"
@@ -69,7 +75,8 @@ const LoginCard = () => {
             onChange={handleChange}
           />
         </div>
-        <div className="input-box">
+
+        <div className="check-box">
           <label htmlFor="termAccepted">
             <input
               type="checkbox"
@@ -82,7 +89,7 @@ const LoginCard = () => {
                 })
               }
             />
-            Accept term of use
+            Accept term and condition
           </label>
         </div>
 
